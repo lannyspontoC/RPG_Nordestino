@@ -2,14 +2,14 @@
 import random
 
 
-class Classe: # Classe pão
+class Heroi: # Classe pão
     def __init__(self, nome, tClasse, ataque, vida, defesa, inventario=None):
         self.nome = nome
         self.tClasse = tClasse
         self.ataque = ataque
         self.vida = vida
         self.defesa = defesa
-        self.inventario = inventario = []
+        self.inventario = inventario
 
     def atacar(self, monstro): # isso faz com que o jogador ataque o monstro
         if self.ataque < monstro.defesa:
@@ -49,8 +49,26 @@ class Monstro: # Classe pão
             jogador.defesa = 0
 
 
-for i in range(1):
+while True:
 
-    jogador = Classe(input("Digite o nome do jogador: "), input("Digite a classe do jogador (guerreiro, mago, arqueiro): "), random.randint(10, 20),random.randint(50, 100), random.randint(5, 15))
     for i in range(3):
-        while jogador.vida > 
+        p1 = Heroi('alanna',random.randint(5,15),100)
+p2 = Heroi('Orc',random.randint(5,15),100)
+
+while p1.vida > 0 and p2.vida > 0:
+
+            p1.atacar(p2)
+            if p2.vida <= 0:
+                break
+            print(f'{p1.nome} atacou {p2.nome}.Vida de {p2.nome}:{p2.vida}')
+            p2.atacar(p1)
+            print(f'{p2.nome} atacou {p1.nome}.Vida de {p1.nome}:{p1.vida}')
+            if p1.vida <= 0:
+                break
+
+if p1.vida <= 0:
+   print(f'{p1.nome} morreu')
+else:
+   print(f'{p2.nome} morreu')
+    print('Parece que você terá que voltar do inicio')
+
