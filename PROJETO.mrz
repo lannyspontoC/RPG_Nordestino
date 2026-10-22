@@ -3,9 +3,8 @@ import random
 
 
 class Heroi: # Classe pão
-    def __init__(self, nome, tClasse, ataque, vida, defesa, inventario=None):
-        self.nome = nome
-        self.tClasse = tClasse
+    def __init__(self, tClasse, ataque, vida, defesa, inventario=None):
+        self.tClasse = tClasse #tipo de classe
         self.ataque = ataque
         self.vida = vida
         self.defesa = defesa
@@ -41,6 +40,7 @@ class Monstro: # Classe pão
         self.ataque = ataque
         self.defesa = defesa
 
+
     def atacar(self, jogador): # faz o monstro atacar o jogador
         if self.ataque < jogador.defesa:
             print(f"{self.nome} não conseguiu causar dano ao jogador.")
@@ -62,11 +62,13 @@ while True:
   else:
     print('Nome inválido')
 
-    for i in range(3):
-        p1 = Heroi('alanna',random.randint(5,15),100)
-p2 = Heroi('Orc',random.randint(5,15),100)
+    
 
-while p1.vida > 0 and p2.vida > 0:
+for b in range(3)
+    for i in range(3):
+
+
+        while p1.vida > 0 and p2.vida > 0:
 
             p1.atacar(p2)
             if p2.vida <= 0:
@@ -77,6 +79,7 @@ while p1.vida > 0 and p2.vida > 0:
             if p1.vida <= 0:
                 break
 
+ 
 if p1.vida <= 0:
    print(f'{p1.nome} morreu')
 else:
