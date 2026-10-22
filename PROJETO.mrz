@@ -50,6 +50,15 @@ class Monstro: # Classe pão
 
 
 while True:
+  nome_heroi = input('Digite o nome do herói: ')
+  tclasse = input('Digite a classe do herói: ')
+  if tclasse in herois:
+    pessoinha_legal = herois[tclasse]
+    pessoinha_legal.nome = nome_heroi
+    break
+
+  else:
+    print('Nome inválido')
 
     for i in range(3):
         p1 = Heroi('alanna',random.randint(5,15),100)
