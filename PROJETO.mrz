@@ -48,7 +48,9 @@ class Monstro: # Classe pão
         elif self.ataque == jogador.defesa:
             jogador.defesa = 0
 
+herois = {}
 
+#usuario escolher o nome e a classe
 while True:
   nome_heroi = input('Digite o nome do herói: ')
   tclasse = input('Digite a classe do herói: ')
