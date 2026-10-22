@@ -1,0 +1,56 @@
+
+import random
+
+
+class Classe: # Classe pão
+    def __init__(self, nome, tClasse, ataque, vida, defesa, inventario=None):
+        self.nome = nome
+        self.tClasse = tClasse
+        self.ataque = ataque
+        self.vida = vida
+        self.defesa = defesa
+        self.inventario = inventario = []
+
+    def atacar(self, monstro): # isso faz com que o jogador ataque o monstro
+        if self.ataque < monstro.defesa:
+            print(f"{self.nome} não conseguiu causar dano ao monstro.")
+            monstro.defesa -= self.ataque
+        elif self.ataque == monstro.defesa:
+            monstro.defesa = 0
+
+    def defender(self, monstro): # faz o jogador defender do ataque do monstro
+        if monstro.ataque > self.defesa:
+            dano = monstro.ataque - self.defesa
+            self.vida -= dano
+            print(f"{self.nome} recebeu {dano} de dano do monstro.")
+        else:
+            print(f"{self.nome} conseguiu se defender do ataque do monstro.")
+
+    def usar_item(self, item): #usa um item do inventário
+        if item in dicionario_de_itens and item in self.inventario:
+            print(f"{self.nome} usou {item}.")
+            self.inventario.remove(item)
+        else:
+            print(f"{self.nome} não possui {item} no inventário.")
+
+
+class Monstro: # Classe pão
+    def __init__(self, nome, vida, ataque, defesa):
+        self.nome = nome
+        self.vida = vida
+        self.ataque = ataque
+        self.defesa = defesa
+
+    def atacar(self, jogador): # faz o monstro atacar o jogador
+        if self.ataque < jogador.defesa:
+            print(f"{self.nome} não conseguiu causar dano ao jogador.")
+            jogador.defesa -= self.ataque
+        elif self.ataque == jogador.defesa:
+            jogador.defesa = 0
+
+
+for i in range(1):
+
+    jogador = Classe(input("Digite o nome do jogador: "), input("Digite a classe do jogador (guerreiro, mago, arqueiro): "), random.randint(10, 20),random.randint(50, 100), random.randint(5, 15))
+    for i in range(3):
+        while jogador.vida > 

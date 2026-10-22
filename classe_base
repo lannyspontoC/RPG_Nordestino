@@ -1,2 +1,0 @@
-class Classe:
-  def__init__(self, nome, tClasse, ataque, vida, defesa):
