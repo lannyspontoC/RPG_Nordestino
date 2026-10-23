@@ -1,11 +1,11 @@
 import random
 import time
+import copy
 
 #Classe Heroi tá com o ataque e defesa show de bolaa
 class Heroi:
     
-#Classe Monstro tá só a carcaça, mas não precisamos de mais nada, só a carcaça mesmo
-    def __init__(self, tclasse, vida, defesa, ataque, relM = None):
+    def __init__(self, tclasse, vida, ataque, defesa, relM = None):
         self.tclasse = tclasse
         self.vida = vida
         self.defesa = defesa
@@ -18,77 +18,112 @@ class Heroi:
             if self.ataque >= self.relM.defesa:
                 self.relM.vida -= dano
                 self.relM.defesa = 0
+                print('O monstro tentou defender, mas você foi mais forte!')
+                print(f'O monstro {self.relM.tmonstro} sofreu {dano} de dano!')
+                print(f'A defesa do monstro {self.relM.tmonstro} agora é {self.relM.defesa}.')
             else:
                 self.relM.defesa -= self.ataque
+                print(f'O monstro {self.relM.tmonstro} defendeu o ataque! A defesa de {self.relM.tmonstro} agora é {self.relM.defesa}.')
                 
         else:
             dano = self.ataque - self.relM.ataque
             if self.ataque > self.relM.ataque:
                 self.relM.vida -= dano
+                print('O monstro também atacou, mas você foi mais forte!')
+                print(f'O monstro {self.relM.tmonstro} sofreu {dano} de dano!')
                 
             elif self.ataque == self.relM.ataque:
-                return 'Empate! Ninguém sofreu dano.'
+                print('O monstro também atacou, mas vocês são igualmente fortes!')
+                print('Empate! Ninguém sofreu dano.')
+                
                 
             else:
+                dano = self.relM.ataque - self.ataque
                 self.vida -= dano
-               
+                print('O monstro defendeu o ataque e contra-atacou!')
+                print(f'O herói {self.tclasse} sofreu {dano} de dano!')
+                
     def defender(self):
         if self.relM.opc == 'atacar':
             if self.relM.ataque >= self.defesa:
                 dano = self.relM.ataque - self.defesa
                 self.vida -= dano
                 self.defesa = 0
+                print('O monstro atacou e você tentou defender, mas ele foi mais forte!')
+                print(f'O herói {self.tclasse} sofreu {dano} de dano! e agora sua defesa é {self.defesa}')
             else:
                 self.defesa -= self.relM.ataque
+                print('O monstro atacou e você defendeu com sucesso!')
+                print(f'A defesa do herói {self.tclasse} agora é {self.defesa}.')
                         
         else:
-            return 'nada aconteceu'
+            print ('nada aconteceu')
             
-    def fugir(self):
-        pass
 
     def fugir(self):
         chance = random.randint(1, 100)
         if chance <= 80:
-            return 'quebrar'
+            return 'Você conseguiu fugir do monstro!'
         
         else:
             return 'Você não conseguiu fugir do monstro!'
+
+    def vida(self):
+        return f'Vida do {self.tclasse}: {self.vida}'
+
+    def __str__(self):
+        return f'''
+====================
+:--- {self.tclasse} ---: 
+vida: {self.vida}
+ataque: {self.ataque} 
+defesa: {self.defesa}
+===================='''
  
- #             
+#Classe Monstro tá só a carcaça, mas não precisamos de mais nada, só a carcaça mesmo             
 class Monstro:
-    def __init__(self, tmonstro, vida, ataque, defesa, opc = None, relJ = None):
+    def __init__(self, tmonstro, vida, ataque, defesa, opc = None):
         self.tmonstro = tmonstro
         self.vida = vida
         self.ataque = ataque
         self.defesa = defesa
         self.opc = random.choice(['atacar', 'defender'])
-        relJ = relJ
+
+    def __str__(self):
+        return f'-- Vida do monstro: {self.vida} || defesa do monstro: {self.defesa} --'
 
 #listas de herois e monstros
-herois = {'feiticeira': Heroi('Feiticeira', 100, 20, 30),
-          'coronel': Heroi('Coronel', 150, 30, 20),
-          'matador': Heroi('Matador', 120, 25, 25),
-          'beato': Heroi('Beato', 80, 15, 35),
-          'sanfoneiro': Heroi('Sanfoneiro', 90, 20, 30),
-          'cangaceiro': Heroi('Cangaceiro', 110, 25, 25)}
+herois = {
+    'feiticeira': Heroi('Feiticeira', 100, random.randint(10, 25), 90),
+    'coronel': Heroi('Coronel', 150, random.randint(15, 35), 40),
+    'matador': Heroi('Matador', 120, random.randint(20, 40), 25),
+    'beato': Heroi('Beato', 85, random.randint(10, 15), 150),
+    'sanfoneiro': Heroi('Sanfoneiro', 90, random.randint(10, 25), 30),
+    'cangaceiro': Heroi('Cangaceiro', 120, random.randint(20, 35), 30),
+    'abacat': Heroi('Administrador', 999999, 999999, 9999999)
+}
 
-monstros = {'caipora': Monstro('Caipora', 80, 25, 15),
-            'loira do banheiro': Monstro('Loira do banheiro', 100, 30, 20),
-            'cumade florzinha': Monstro('Cumade florzinha', 120, 35, 25),
-            'chupa cabra': Monstro('Chupa cabra', 150, 40, 30),
-            'rasga mortalha': Monstro('Rasga mortalha', 200, 50, 40),
-            'cabra cabriola': Monstro('Cabra cabriola', 250, 60, 50)}
+monstros = {
+    'caipora': Monstro('Caipora', 40, random.randint(10, 25), 5),
+    'loira do banheiro': Monstro('Loira do banheiro', 50, random.randint(10, 25), 8),
+    'cumade florzinha': Monstro('Cumade Florzinha', 60, random.randint(10, 25), 10),
+    'chupa cabra': Monstro('Chupa-cabra', 70, random.randint(10, 25), 12),
+    'rasga mortalha': Monstro('Rasga-mortalha', 80, random.randint(10, 25), 15),
+    'cabra cabriola': Monstro('Cabra Cabriola', 90, random.randint(10, 25), 18)
+}
 
-boss = {'iara': Monstro('Iara', 300, 70, 60),
-        'boitata': Monstro('Boitata', 350, 80, 70),
-        'curupira': Monstro('Curupira', 400, 90, 80),
-        'cuca': Monstro('Cuca', 500, 110, 100),
-        'corpo seco': Monstro('Corpo seco', 550, 100, 90),
-        'fofao': Monstro('Fofão', 600, 120, 110)}
+boss = {
+    'iara': Monstro('Iara', 180, 30, 20),
+    'boitata': Monstro('Boitatá', 220, 35, 25),
+    'curupira': Monstro('Curupira', 260, 40, 30),
+    'cuca': Monstro('Cuca', 300, 45, 35),
+    'corpo seco': Monstro('Corpo Seco', 320, 40, 30)
+}
+
+fofao = Monstro('Fofão', 400, 45, 35)
 
 #Textos de batalha
-textos = ['', '', '']
+textos = ['1', '2', '3', '4', '5', '6', '7']
 
 #usuario escolher a classe
 while True:
@@ -104,26 +139,153 @@ while True:
     
     if tclasse in herois:
         jogador = herois[tclasse]
+        print(f'Você escolheu a classe {jogador.tclasse}\n-Atributos da classe: Vida: {jogador.vida}, Ataque: {jogador.ataque}, Defesa: {jogador.defesa}-')
         break
     else:
         print('Tipo de classe inválido')
 
-for t in range(3): #boss e texto
-    print(t)
-        
+for t in range(3):
+    if jogador.vida <= 0:
+        break
+            
     for i in range(3): #inimigos menores e texto deles
-        print(i)
-        inimigo = random.choice(list(monstros))
-        jogador.relM = inimigo
-        print(f'Você encontrou um {inimigo}!')
-        print(textos[i])
+        if jogador.vida <= 0:
+            break
+        inimigo_base = random.choice(list(monstros.values()))
+        inimigo = copy.deepcopy(inimigo_base)
+        print(f'Você encontrou um {inimigo.tmonstro}!')
+        print(f'O inimigo tem {inimigo.vida} de vida, e sua defesa é de {inimigo.defesa}')
 
-    print(textos[i+t+1]) #Não entendi isso aqui, mas faz sentido
+        #Verificar se a luta deve continuar ou não
+        while True:
+            if jogador.vida <= 0:
+                print('Você morreu! O jogo acabou!')
+                break
+            elif inimigo.vida <= 0:
+                print(f'Você derrotou o inimigo {inimigo.tmonstro}!')
+                break
+            else:
+                jogador.relM = inimigo
+                
+                #Combate
+                print('='*30)
+                escolha = input('Escolha uma ação (atacar, defender, fugir): ').lower()
+                print('='*30)
+                if escolha == 'atacar':
+                    inimigo.opc = random.choice(['atacar', 'defender'])
+                    jogador.atacar()
+                    print(jogador)
+                    print(inimigo)
+                elif escolha == 'defender':
+                    inimigo.opc = random.choice(['atacar', 'defender'])
+                    if jogador.relM.opc == 'atacar':
+                        jogador.defender()
+                        print(jogador)
+                        print(inimigo)
+
+                    elif jogador.relM.opc == 'defender':
+                        jogador.defender()
+                        print(jogador)
+                        print(inimigo)
+
+                    else:
+                        print('Ação inválida!')
+                        print(jogador)
+                        print(inimigo)
+
+                elif escolha == 'fugir':
+                    if jogador.fugir() == 'Você conseguiu fugir do monstro!':
+                        print('Você conseguiu fugir do monstro... ')
+                        break
+
+                    else:
+                        print('Você não consegue fugir do monstro...')
+                        inimigo.opc = random.choice(['atacar', 'defender'])
+
+                else:
+                    print('Ação inválida!')
+                
+
+                print(textos[i])
+            
+        print(textos[i+t+1])
+
+     #Boss e texto deles        
+    if jogador.vida <= 0:
+        break
+    print('='*30)
+    print('Você derrotou todos os inimigos! Agora é hora de enfrentar o boss!')
+    boss_base = random.choice(list(boss.values()))
+    chefao = copy.deepcopy(boss_base)
+    print(f'VOCÊ ENCONTROU O BOSS: {chefao.tmonstro}!')
+    print(f'O inimigo tem {chefao.vida} de vida, e sua defesa é de {chefao.defesa}')
+
+        #Verificar se a luta deve continuar ou não
+    while True:
+        if jogador.vida <= 0:
+            print('Você morreu! O jogo acabou!')
+            break
+        elif chefao.vida <= 0:
+            print(f'Você derrotou o inimigo {chefao.tmonstro}!')
+            break
+        else:
+            jogador.relM = chefao
+                        
+            #Combate
+        print('='*30)
+        escolha = input('Escolha uma ação (atacar, defender, fugir): ').lower()
+        print('='*30)
+        if escolha == 'atacar':
+            chefao.opc = random.choice(['atacar', 'defender'])
+            jogador.atacar()
+            print(jogador)
+            print(chefao)
+        elif escolha == 'defender':
+            chefao.opc = random.choice(['atacar', 'defender'])
+            if jogador.relM.opc == 'atacar':
+                jogador.defender()
+                print(jogador)
+                print(chefao)
+        
+            elif jogador.relM.opc == 'defender':
+                jogador.defender()
+                print(jogador)
+                print(chefao)
+        
+            else:
+                print('Ação inválida!')
+                print(jogador)
+                print(chefao)
+            
+        elif escolha == 'fugir':
+                print('Você não consegue fugir do boss!')
+                chefao.opc = random.choice(['atacar', 'defender'])
+            
+        else:
+            print('Ação inválida!')
+        
+
+#Boss secreto fofão
+'''if jogador.vida > 0:
+    print('Você derrotou todos os inimigos! Agora é hora de enfrentar o boss final!')
+    boss_final = fofao
+    jogador.relM = boss_final
+    print(f'Você encontrou o boss final: {boss_final.tmonstro}!')
     
-    
-#Fazer isso aqui mais tarde
-'''if p1.vida <= 0:
-   print(f'{p1.nome} morreu')
-else:
-   print(f'{p2.nome} morreu')
-    print('Parece que você terá que voltar do inicio')'''
+    while True:
+        if jogador.vida <= 0:
+            break
+        elif boss_final.vida <= 0:
+            break
+        escolha = input('Escolha uma ação (atacar, defender, fugir): ').lower()
+        if escolha == 'atacar':
+            boss_final.opc = random.choice(['atacar', 'defender'])
+            print(jogador.atacar())
+            
+        elif escolha == 'defender':
+            pass
+        elif escolha == 'fugir':
+            pass
+
+        else:
+            print('Ação inválida!')'''
