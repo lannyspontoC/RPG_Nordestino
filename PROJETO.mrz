@@ -1,88 +1,129 @@
-
 import random
+import time
 
-
-class Heroi: # Classe pão
-    def __init__(self, tClasse, ataque, vida, defesa, inventario=None):
-        self.tClasse = tClasse #tipo de classe
-        self.ataque = ataque
-        self.vida = vida
-        self.defesa = defesa
-        self.inventario = inventario
-
-    def atacar(self, monstro): # isso faz com que o jogador ataque o monstro
-        if self.ataque < monstro.defesa:
-            print(f"{self.nome} não conseguiu causar dano ao monstro.")
-            monstro.defesa -= self.ataque
-        elif self.ataque == monstro.defesa:
-            monstro.defesa = 0
-
-    def defender(self, monstro): # faz o jogador defender do ataque do monstro
-        if monstro.ataque > self.defesa:
-            dano = monstro.ataque - self.defesa
-            self.vida -= dano
-            print(f"{self.nome} recebeu {dano} de dano do monstro.")
-        else:
-            print(f"{self.nome} conseguiu se defender do ataque do monstro.")
-
-    def usar_item(self, item): #usa um item do inventário
-        if item in dicionario_de_itens and item in self.inventario:
-            print(f"{self.nome} usou {item}.")
-            self.inventario.remove(item)
-        else:
-            print(f"{self.nome} não possui {item} no inventário.")
-
-
-class Monstro: # Classe pão
-    def __init__(self, nome, vida, ataque, defesa):
-        self.nome = nome
-        self.vida = vida
-        self.ataque = ataque
-        self.defesa = defesa
-
-
-    def atacar(self, jogador): # faz o monstro atacar o jogador
-        if self.ataque < jogador.defesa:
-            print(f"{self.nome} não conseguiu causar dano ao jogador.")
-            jogador.defesa -= self.ataque
-        elif self.ataque == jogador.defesa:
-            jogador.defesa = 0
-
-herois = {}
-
-#usuario escolher o nome e a classe
-while True:
-  nome_heroi = input('Digite o nome do herói: ')
-  tclasse = input('Digite a classe do herói: ')
-  if tclasse in herois:
-    pessoinha_legal = herois[tclasse]
-    pessoinha_legal.nome = nome_heroi
-    break
-
-  else:
-    print('Nome inválido')
-
+#Classe Heroi tá com o ataque e defesa show de bolaa
+class Heroi:
     
+#Classe Monstro tá só a carcaça, mas não precisamos de mais nada, só a carcaça mesmo
+    def __init__(self, tclasse, vida, defesa, ataque, relM = None):
+        self.tclasse = tclasse
+        self.vida = vida
+        self.defesa = defesa
+        self.ataque = ataque
+        self.relM = relM
 
-for b in range(3)
-    for i in range(3):
+    def atacar(self):
+        if self.relM.opc == 'defender':
+            dano = self.ataque - self.relM.defesa
+            if self.ataque >= self.relM.defesa:
+                self.relM.vida -= dano
+                self.relM.defesa = 0
+            else:
+                self.relM.defesa -= self.ataque
+                
+        else:
+            dano = self.ataque - self.relM.ataque
+            if self.ataque > self.relM.ataque:
+                self.relM.vida -= dano
+                
+            elif self.ataque == self.relM.ataque:
+                return 'Empate! Ninguém sofreu dano.'
+                
+            else:
+                self.vida -= dano
+               
+    def defender(self):
+        if self.relM.opc == 'atacar':
+            if self.relM.ataque >= self.defesa:
+                dano = self.relM.ataque - self.defesa
+                self.vida -= dano
+                self.defesa = 0
+            else:
+                self.defesa -= self.relM.ataque
+                        
+        else:
+            return 'nada aconteceu'
+            
+    def fugir(self):
+        pass
 
-
-        while p1.vida > 0 and p2.vida > 0:
-
-            p1.atacar(p2)
-            if p2.vida <= 0:
-                break
-            print(f'{p1.nome} atacou {p2.nome}.Vida de {p2.nome}:{p2.vida}')
-            p2.atacar(p1)
-            print(f'{p2.nome} atacou {p1.nome}.Vida de {p1.nome}:{p1.vida}')
-            if p1.vida <= 0:
-                break
-
+    def fugir(self):
+        chance = random.randint(1, 100)
+        if chance <= 80:
+            return 'quebrar'
+        
+        else:
+            return 'Você não conseguiu fugir do monstro!'
  
-if p1.vida <= 0:
+ #             
+class Monstro:
+    def __init__(self, tmonstro, vida, ataque, defesa, opc = None, relJ = None):
+        self.tmonstro = tmonstro
+        self.vida = vida
+        self.ataque = ataque
+        self.defesa = defesa
+        self.opc = random.choice(['atacar', 'defender'])
+        relJ = relJ
+
+#listas de herois e monstros
+herois = {'feiticeira': Heroi('Feiticeira', 100, 20, 30),
+          'coronel': Heroi('Coronel', 150, 30, 20),
+          'matador': Heroi('Matador', 120, 25, 25),
+          'beato': Heroi('Beato', 80, 15, 35),
+          'sanfoneiro': Heroi('Sanfoneiro', 90, 20, 30),
+          'cangaceiro': Heroi('Cangaceiro', 110, 25, 25)}
+
+monstros = {'caipora': Monstro('Caipora', 80, 25, 15),
+            'loira do banheiro': Monstro('Loira do banheiro', 100, 30, 20),
+            'cumade florzinha': Monstro('Cumade florzinha', 120, 35, 25),
+            'chupa cabra': Monstro('Chupa cabra', 150, 40, 30),
+            'rasga mortalha': Monstro('Rasga mortalha', 200, 50, 40),
+            'cabra cabriola': Monstro('Cabra cabriola', 250, 60, 50)}
+
+boss = {'iara': Monstro('Iara', 300, 70, 60),
+        'boitata': Monstro('Boitata', 350, 80, 70),
+        'curupira': Monstro('Curupira', 400, 90, 80),
+        'cuca': Monstro('Cuca', 500, 110, 100),
+        'corpo seco': Monstro('Corpo seco', 550, 100, 90),
+        'fofao': Monstro('Fofão', 600, 120, 110)}
+
+#Textos de batalha
+textos = ['', '', '']
+
+#usuario escolher a classe
+while True:
+
+    print('Tipos de classes disponiveis:')
+    
+    print('='*15)
+    for i in herois:
+        print(f'-- {herois[i].tclasse} --')
+    print('='*15)
+    
+    tclasse = input('Digite a classe do herói: ').lower()
+    
+    if tclasse in herois:
+        jogador = herois[tclasse]
+        break
+    else:
+        print('Tipo de classe inválido')
+
+for t in range(3): #boss e texto
+    print(t)
+        
+    for i in range(3): #inimigos menores e texto deles
+        print(i)
+        inimigo = random.choice(list(monstros))
+        jogador.relM = inimigo
+        print(f'Você encontrou um {inimigo}!')
+        print(textos[i])
+
+    print(textos[i+t+1]) #Não entendi isso aqui, mas faz sentido
+    
+    
+#Fazer isso aqui mais tarde
+'''if p1.vida <= 0:
    print(f'{p1.nome} morreu')
 else:
    print(f'{p2.nome} morreu')
-    print('Parece que você terá que voltar do inicio')
-
+    print('Parece que você terá que voltar do inicio')'''
