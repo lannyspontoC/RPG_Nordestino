@@ -79,7 +79,26 @@ vida: {self.vida}
 ataque: {self.ataque} 
 defesa: {self.defesa}
 ===================='''
- 
+
+
+class Armadura:
+    
+    def __init__(self, nome, porcDefesa, porcAtaque, porcVida):
+        self.nome = nome
+        self.porcentagem_defesa = porcDefesa
+        self.porcentagem_ataque = porcAtaque
+        self.porcentagem_vida = porcVida
+
+    def __str__(self):
+        return f'Porcentagem de defesa: {self.porcentagem_defesa}\nPorcentagem de ataque: {self.porcentagem_ataque}\nPorcentagem de vida: {self.porcentagem_vida}'
+
+    def dropar(self):
+        chance = random.randint(1, 100)
+        if chance <= 20:
+            return f'Você encontrou a armadura {self.nome}!'
+        else:
+            return 'Você não encontrou nenhuma armadura.'
+
 #Classe Monstro tá só a carcaça, mas não precisamos de mais nada, só a carcaça mesmo             
 class Monstro:
     def __init__(self, tmonstro, vida, ataque, defesa, opc = None):
@@ -123,11 +142,30 @@ boss = {
 fofao = Monstro('Fofão', 400, 45, 35)
 
 #Textos de batalha
-textos = ['1', '2', '3', '4', '5', '6', '7']
+textos = ['No sertão do Nordeste, uma antiga maldição desperta após uma longa seca...', 
+          'Criaturas do folclore, como a Caipora, a Rasga-mortalha e o Lobisomem, começam a surgir, atacando vilarejos e espalhando o medo.',
+          'O jogador é um jovem que precisa investigar os desaparecimentos e descobrir a origem dos monstros.',
+          'Para salvar a região, terá que explorar matas, ruínas e cidades abandonadas...',
+          'enfrentando criaturas sobrenaturais e desvendando segredos antigos.',
+          'Mas, quanto mais próximo da verdade, mais é possível notar que o maior perigo pode não ser os monstros',
+          'e sim aquilo que está despertando por trás deles.']
 
+for j in range(len(textos)):
+    m = 0
+    while m < 200:
+        print(' ')
+        m += 1
+    print(textos[j])
+   
+    input(f'(Pressione enter para continuar...)')
+    
 #usuario escolher a classe
 while True:
-
+    m = 0
+    while m < 200:
+        print(' ')
+        m += 1
+            
     print('Tipos de classes disponiveis:')
     
     print('='*15)
@@ -171,6 +209,10 @@ for t in range(3):
                 print('='*30)
                 escolha = input('Escolha uma ação (atacar, defender, fugir): ').lower()
                 print('='*30)
+                m = 0
+                while m < 40:
+                    print(' ')
+                    m += 1
                 if escolha == 'atacar':
                     inimigo.opc = random.choice(['atacar', 'defender'])
                     jogador.atacar()
