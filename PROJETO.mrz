@@ -5,12 +5,13 @@ import copy
 #Classe Heroi tá com o ataque e defesa show de bolaa
 class Heroi:
     
-    def __init__(self, tclasse, vida, ataque, defesa, relM = None):
+    def __init__(self, tclasse, vida, ataque, defesa, relM = None, relArmadura = None):
         self.tclasse = tclasse
         self.vida = vida
         self.defesa = defesa
         self.ataque = ataque
         self.relM = relM
+        self.relArmadura = relArmadura
 
     def atacar(self):
         if self.relM.opc == 'defender':
@@ -83,11 +84,12 @@ defesa: {self.defesa}
 
 class Armadura:
     
-    def __init__(self, nome, porcDefesa, porcAtaque, porcVida):
+    def __init__(self, nome, porcDefesa, porcAtaque, porcVida, relMo):
         self.nome = nome
         self.porcentagem_defesa = porcDefesa
         self.porcentagem_ataque = porcAtaque
         self.porcentagem_vida = porcVida
+        self.relMo = relMo
 
     def __str__(self):
         return f'Porcentagem de defesa: {self.porcentagem_defesa}\nPorcentagem de ataque: {self.porcentagem_ataque}\nPorcentagem de vida: {self.porcentagem_vida}'
@@ -95,13 +97,20 @@ class Armadura:
     def dropar(self):
         chance = random.randint(1, 100)
         if chance <= 20:
-            return f'Você encontrou a armadura {self.nome}!'
+            print(f'O {self.relMo.tmonstro} derrubou {self.nome}!')
+            print(self.__str__())
+            dec = input('Você escolhe permanecer do jeito que está ou trocar a armadura? ').lower()
+            if dec == 'trocar':
+                self.relArmadura = self
+            else:
+                print('Você escolheu permanecer com a armadura atual.')
+
         else:
-            return 'Você não encontrou nenhuma armadura.'
+            return 'O monstro não deixou nenhum item para trás.'
 
 #Classe Monstro tá só a carcaça, mas não precisamos de mais nada, só a carcaça mesmo             
 class Monstro:
-    def __init__(self, tmonstro, vida, ataque, defesa, opc = None):
+    def __init__(self, tmonstro, vida, ataque, defesa):
         self.tmonstro = tmonstro
         self.vida = vida
         self.ataque = ataque
@@ -122,6 +131,17 @@ herois = {
     'abacat': Heroi('Administrador', 999999, 999999, 9999999)
 }
 
+armaduras = {'pistola': Armadura('Pistola', 0, 10, 0, None),
+                'facão': Armadura('Facão', 0, 15, 0, None),
+                'colete': Armadura('Colete', 20, 0, 0, None),
+                'cajado': Armadura('Cajado', 0, 10, 0, None),
+                'espada': Armadura('Espada', 0, 20, 0, None),
+                'escudo': Armadura('Escudo', 30, 0, 0, None),
+                'chapéu de couro': Armadura('Chapéu de couro', 10, 0, 0, None),
+                'botas de couro': Armadura('Botas de couro', 5, 0, 0, None),
+                'cinto de couro': Armadura('Cinto de couro', 5, 0, 0, None)}
+
+
 monstros = {
     'caipora': Monstro('Caipora', 40, random.randint(10, 25), 5),
     'loira do banheiro': Monstro('Loira do banheiro', 50, random.randint(10, 25), 8),
@@ -140,6 +160,7 @@ boss = {
 }
 
 fofao = Monstro('Fofão', 400, 45, 35)
+caos = Monstro('Caos', 666, 52, 35)
 
 #Textos de batalha
 textos = ['No sertão do Nordeste, uma antiga maldição desperta após uma longa seca...', 
@@ -248,9 +269,6 @@ for t in range(3):
                     print('Ação inválida!')
                 
 
-                print(textos[i])
-            
-        print(textos[i+t+1])
 
      #Boss e texto deles        
     if jogador.vida <= 0:
@@ -307,10 +325,9 @@ for t in range(3):
             print('Ação inválida!')
         
 
-#Boss secreto fofão
-'''if jogador.vida > 0:
+if jogador.vida > 0:
     print('Você derrotou todos os inimigos! Agora é hora de enfrentar o boss final!')
-    boss_final = fofao
+    boss_final = caos
     jogador.relM = boss_final
     print(f'Você encontrou o boss final: {boss_final.tmonstro}!')
     
@@ -330,4 +347,8 @@ for t in range(3):
             pass
 
         else:
-            print('Ação inválida!')'''
+            print('Ação inválida!')
+            
+            
+else:
+    print('Fim de jogo!')
