@@ -1,5 +1,4 @@
 import random
-import time
 import copy
 
 #Classe Heroi tá com o ataque e defesa show de bolaa
