@@ -11,6 +11,47 @@ class Heroi:
         self.ataque = ataque
         self.relM = relM
         self.relArmadura = relArmadura
+        self.ataque_base = ataque
+        self.defesa_base = defesa
+        self.vida_base = vida
+        self.defesa_maxima = defesa
+        self.vida_maxima = vida
+
+
+    def equipar(self, armadura):
+    # Bônus da armadura atual
+        if self.relArmadura:
+            defesa_antiga = self.relArmadura.porcentagem_defesa
+            ataque_antigo = self.relArmadura.porcentagem_ataque
+            vida_antiga = self.relArmadura.porcentagem_vida
+        else:
+            defesa_antiga = 0
+            ataque_antigo = 0
+            vida_antiga = 0
+
+        # Calcula os novos atributos máximos
+        nova_defesa = round(self.defesa_base * (1 + armadura.porcentagem_defesa / 100))
+        novo_ataque = round(self.ataque_base * (1 + armadura.porcentagem_ataque / 100))
+        nova_vida = round(self.vida_base * (1 + armadura.porcentagem_vida / 100))
+
+        # Calcula os atributos máximos anteriores
+        defesa_anterior = round(self.defesa_base * (1 + defesa_antiga / 100))
+        vida_anterior = round(self.vida_base * (1 + vida_antiga / 100))
+
+        # Atualiza defesa e vida atuais, preservando os valores já consumidos
+        self.defesa += nova_defesa - defesa_anterior
+        self.vida += nova_vida - vida_anterior
+
+        # Atualiza os limites máximos
+        self.defesa_maxima = nova_defesa
+        self.vida_maxima = nova_vida
+
+        # Atualiza o ataque
+        self.ataque = novo_ataque
+
+        # Registra a armadura equipada
+        self.relArmadura = armadura
+
 
     def atacar(self):
         if self.relM.opc == 'defender':
@@ -62,14 +103,14 @@ class Heroi:
 
     def fugir(self):
         chance = random.randint(1, 100)
-        if chance <= 80:
+        if chance > 80:
             return 'Você conseguiu fugir do monstro!'
         
         else:
             return 'Você não conseguiu fugir do monstro!'
 
-    def vida(self):
-        return f'Vida do {self.tclasse}: {self.vida}'
+    def apresentar(self):
+        return f'Herói: {self.tclasse}'
 
     def __str__(self):
         return f'''
@@ -93,28 +134,48 @@ class Armadura:
     def __str__(self):
         return f'Porcentagem de defesa: {self.porcentagem_defesa}\nPorcentagem de ataque: {self.porcentagem_ataque}\nPorcentagem de vida: {self.porcentagem_vida}'
 
-    def dropar(self):
+    def dropar(self, heroi, monstro):
         chance = random.randint(1, 100)
-        if chance <= 20:
-            print(f'O {self.relMo.tmonstro} derrubou {self.nome}!')
-            print(self.__str__())
-            dec = input('Você escolhe permanecer do jeito que está ou trocar a armadura? ').lower()
-            if dec == 'trocar':
-                self.relArmadura = self
-            else:
-                print('Você escolheu permanecer com a armadura atual.')
 
+        if chance > 65:
+            print(f'O {monstro.tmonstro} derrubou {self.nome}!')
+            print(self)
+
+            dec = input('Deseja trocar para esse equipamento? ').lower()
+
+            if dec == 'trocar' or dec == 'sim':
+                heroi.equipar(self)
+                print(f'Você equipou {self.nome}!')
+                print(f'Ataque: {heroi.ataque}')
+                print(f'Defesa: {heroi.defesa}')
+                print(f'Vida: {heroi.vida}')
+            else:
+                print('Você decidiu não trocar de equipamento.')
         else:
-            return 'O monstro não deixou nenhum item para trás.'
+            print('O monstro não deixou nenhum item para trás.')
 
 #Classe Monstro tá só a carcaça, mas não precisamos de mais nada, só a carcaça mesmo             
 class Monstro:
     def __init__(self, tmonstro, vida, ataque, defesa):
         self.tmonstro = tmonstro
-        self.vida = vida
+        self._vida = vida
         self.ataque = ataque
         self.defesa = defesa
-        self.opc = random.choice(['atacar', 'defender'])
+        self.opc = random.choice(['atacar', 'defender'])    
+    
+    @property
+    def vida(self):
+        return self._vida
+
+    @vida.setter
+    def vida(self, valor):
+        if valor < 0:
+            self._vida = 0
+        else:
+            self._vida = valor
+
+    def apresentar(self):
+        return f'Monstro: {self.tmonstro}'
 
     def __str__(self):
         return f'-- Vida do monstro: {self.vida} || defesa do monstro: {self.defesa} --'
@@ -139,7 +200,9 @@ armaduras = {'pistola': Armadura('Pistola', 0, 10, 0, None),
                 'chapéu de couro': Armadura('Chapéu de couro', 10, 0, 0, None),
                 'botas de couro': Armadura('Botas de couro', 5, 0, 0, None),
                 'cinto de couro': Armadura('Cinto de couro', 5, 0, 0, None)}
-
+def tentar_drop(heroi, monstro):
+    item = random.choice(list(armaduras.values()))
+    item.dropar(heroi, monstro)
 
 monstros = {
     'caipora': Monstro('Caipora', 40, random.randint(10, 25), 5),
@@ -209,10 +272,17 @@ for t in range(3):
     for i in range(3): #inimigos menores e texto deles
         if jogador.vida <= 0:
             break
+
+
         inimigo_base = random.choice(list(monstros.values()))
         inimigo = copy.deepcopy(inimigo_base)
         print(f'Você encontrou um {inimigo.tmonstro}!')
         print(f'O inimigo tem {inimigo.vida} de vida, e sua defesa é de {inimigo.defesa}')
+        personagens = [jogador, inimigo]
+
+        for personagem in personagens:
+            print('='*2)
+            print(personagem.apresentar())
 
         #Verificar se a luta deve continuar ou não
         while True:
@@ -221,7 +291,9 @@ for t in range(3):
                 break
             elif inimigo.vida <= 0:
                 print(f'Você derrotou o inimigo {inimigo.tmonstro}!')
+                tentar_drop(jogador, inimigo)
                 break
+
             else:
                 jogador.relM = inimigo
                 
@@ -278,6 +350,11 @@ for t in range(3):
     chefao = copy.deepcopy(boss_base)
     print(f'VOCÊ ENCONTROU O BOSS: {chefao.tmonstro}!')
     print(f'O inimigo tem {chefao.vida} de vida, e sua defesa é de {chefao.defesa}')
+    personagens = [jogador, chefao]
+    
+    for personagem in personagens:
+        print('='*2)
+        print(personagem.apresentar())
 
         #Verificar se a luta deve continuar ou não
     while True:
@@ -286,6 +363,7 @@ for t in range(3):
             break
         elif chefao.vida <= 0:
             print(f'Você derrotou o inimigo {chefao.tmonstro}!')
+            tentar_drop(jogador, chefao)
             break
         else:
             jogador.relM = chefao
@@ -329,24 +407,62 @@ if jogador.vida > 0:
     boss_final = caos
     jogador.relM = boss_final
     print(f'Você encontrou o boss final: {boss_final.tmonstro}!')
+    print(f'O inimigo tem {boss_final.vida} de vida, e sua defesa é de {boss_final.defesa}')
+
+    personagens = [jogador, boss_final]
+    
+    for personagem in personagens:
+        print('='*2)
+        print(personagem.apresentar())
+        print('='*5)
+
+    print('Dessa vez, não há como fugir! Você terá que enfrentar o boss final até o fim!')
     
     while True:
-        if jogador.vida <= 0:
-            break
-        elif boss_final.vida <= 0:
-            break
-        escolha = input('Escolha uma ação (atacar, defender, fugir): ').lower()
-        if escolha == 'atacar':
-            boss_final.opc = random.choice(['atacar', 'defender'])
-            print(jogador.atacar())
-            
-        elif escolha == 'defender':
-            pass
-        elif escolha == 'fugir':
-            pass
+            if jogador.vida <= 0:
+                print('Você morreu! O jogo acabou!')
+                break
+            elif boss_final.vida <= 0:
+                print(f'Você derrotou o boss final {boss_final.tmonstro}!')
+                break
+            else:
+                jogador.relM = boss_final
+                
+                #Combate
+                print('='*30)
+                escolha = input('Escolha uma ação (atacar, defender, fugir): ').lower()
+                print('='*30)
+                m = 0
+                while m < 40:
+                    print(' ')
+                    m += 1
+                if escolha == 'atacar':
+                    boss_final.opc = random.choice(['atacar', 'defender'])
+                    jogador.atacar()
+                    print(jogador)
+                    print(boss_final)
+                elif escolha == 'defender':
+                    boss_final.opc = random.choice(['atacar', 'defender'])
+                    if jogador.relM.opc == 'atacar':
+                        jogador.defender()
+                        print(jogador)
+                        print(boss_final)
 
-        else:
-            print('Ação inválida!')
+                    elif jogador.relM.opc == 'defender':
+                        jogador.defender()
+                        print(jogador)
+                        print(boss_final)
+
+                    else:
+                        print('Ação inválida!')
+                        print(jogador)
+                        print(boss_final)
+
+                elif escolha == 'fugir':
+                    print('Você não consegue fugir do boss final!')
+                    boss_final.opc = random.choice(['atacar', 'defender'])
+                else:
+                    print('Ação inválida!')
             
             
 else:
